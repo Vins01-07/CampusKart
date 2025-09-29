@@ -1,0 +1,252 @@
+
+/* Main Container */
+.sell-products-container {
+  max-width: 2000px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+   background: linear-gradient(135deg, #e2e5e8, #687a753f); 
+
+  
+  
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.header h1 {
+ font-size: 3rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  animation: glow-light 2s infinite alternate;
+  position: relative;
+  z-index: 2;
+  color: #d5cfcf;
+}
+
+@keyframes glow-light {
+  from {
+    text-shadow: 0 0 10px #2ca1b6, 0 0 20px #a7cdf1;
+  }
+  to {
+    text-shadow: 0 0 20px #0a0f14, 0 0 40px #4a90e2;
+  }
+}
+.header p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* Form Styling */
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Image Upload Section */
+.image-upload-section {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.image-upload-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.image-drop-area {
+  border: 2px dashed #aaa;
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  transition: border 0.3s ease;
+}
+
+.image-drop-area.drag-active {
+  border-color: #007BFF;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  color: #007BFF;
+}
+
+.upload-text {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.or-text {
+  margin-top: 15px;
+  font-size: 1.1rem;
+  color: #888;
+}
+
+.browse-button {
+  display: inline-block;
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  margin-top: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.browse-button input {
+  display: none;
+}
+
+.file-info {
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 10px;
+}
+
+.image-preview {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.image-preview-item {
+  position: relative;
+  display: inline-block;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.image-preview-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.remove-image-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: none;
+  color: white;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.remove-image-button:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Product Details Section */
+.product-details-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.input-field,
+select {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  margin-right: 10px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+label {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+/* Safety Tips */
+.safety-tips {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 30px;
+}
+
+.safety-tips h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.safety-tips ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.safety-tips li {
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+/* Submit Buttons */
+.submit-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.save-draft-button,
+.publish-button {
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.save-draft-button {
+  background-color: #f1f1f1;
+  color: #555;
+}
+
+.save-draft-button:hover {
+  background-color: #ddd;
+}
+
+.publish-button {
+  background-color: #007BFF;
+  color: white;
+}
+
+.publish-button:hover {
+  background-color: #0056b3;
+}

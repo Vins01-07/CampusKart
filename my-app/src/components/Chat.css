@@ -1,0 +1,101 @@
+/* ChatApp CSS to match login.css theme */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(135deg, #e2e5e8, #bfccc9); /* Light gradient */
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* Chat window styles */
+.chat-window {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: scroll;
+  background-color: rgba(255, 255, 255, 0.6); /* Light glass effect */
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 40px rgba(74, 144, 226, 0.3); /* Floating effect */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  max-height: 400px;
+  margin-bottom: 15px;
+}
+
+.chat-message {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 16px;
+}
+
+.chat-user {
+  font-weight: 700;
+  color: #4a90e2;
+}
+
+.chat-user.chatbot {
+  color: #50e3c2; /* Different color for the chatbot */
+}
+
+/* Message input styles */
+.message-input-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.message-input {
+  width: 85%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background-color: #fefefe;
+  color: #333;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.message-input:focus {
+  border-color: #4a90e2;
+  background-color: #e8f5fe;
+}
+
+.send-btn {
+  padding: 12px 18px;
+  background: linear-gradient(135deg, #4a90e2, #50e3c2);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.send-btn:hover {
+  background: linear-gradient(135deg, #357abd, #4a90e2);
+  box-shadow: 0 0 12px rgba(74, 144, 226, 0.3);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .chat-window {
+    max-height: 350px;
+  }
+
+  .message-input-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .message-input {
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  .send-btn {
+    width: 100%;
+  }
+}

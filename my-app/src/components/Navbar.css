@@ -1,0 +1,171 @@
+/* Modern Light Navbar for Campus Store */
+
+/* Navbar Container */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 6px 18px rgba(80, 227, 194, 0.15);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  font-family: 'Poppins', sans-serif;
+  transform: translateY(-100%);
+  animation: slideIn 0.6s ease-out forwards;
+  transition: all 0.4s ease;
+}
+
+/* Slide-In Animation */
+@keyframes slideIn {
+  0% { transform: translateY(-100%); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Padding for fixed navbar */
+body {
+  padding-top: 80px;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #fdfdfd;
+  overflow-x: hidden;
+}
+
+/* Logo */
+.navbar h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0;
+  background: linear-gradient(90deg, #4a90e2, #50e3c2);
+  background-size: 300% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: gradientFlow 6s linear infinite;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.navbar h2:hover {
+  transform: scale(1.08) rotate(-1deg);
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+  100% { background-position: 0% center; }
+}
+
+/* Nav Links */
+.nav-links {
+  display: flex;
+  gap: 1.4rem;
+  align-items: center;
+  flex-wrap: nowrap;
+  margin-right: 2%;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.nav-links::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* Nav Items */
+.nav-links a,
+.nav-btn,
+.logout-btn,
+.login-btn {
+  position: relative;
+  color: #2d2d2d;
+  text-decoration: none;
+  font-size: 0.95rem;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: rgba(80, 227, 194, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.149);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Hover Effects */
+.nav-links a:hover,
+.nav-btn:hover,
+.logout-btn:hover {
+  background: rgba(80, 227, 194, 0.15);
+  color: #4a90e2;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+}
+
+/* Underline Animation */
+.nav-links a::after,
+.nav-btn::after,
+.logout-btn::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, #4a90e2, #50e3c2);
+  transition: transform 0.3s ease;
+}
+
+.nav-links a:hover::after,
+.nav-btn:hover::after,
+.logout-btn:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* Menu Icon (Four Dots) */
+.menu-icon {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 6px;
+  padding: 6px;
+  z-index: 1001; /* Ensure it's on top */
+}
+
+.menu-icon .dot {
+  width: 30px;
+  height: 5px;
+  background-color: #2d2d2d; /* Dark color for visibility */
+  border-radius: 5px;
+  transition: 0.3s ease;
+}
+
+/* Mobile and PC Layout */
+@media (max-width: 768px) {
+  /* Hide the regular nav links by default on mobile */
+  .nav-links {
+    display: none; /* Hidden by default on mobile */
+    flex-direction: column;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  /* Show the navbar links when open */
+  .navbar.open .nav-links {
+    display: flex;
+  }
+}
+
+
+/* Scrolled Navbar Style */
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 4px 20px rgba(80, 227, 194, 0.2);
+  padding: 0.8rem 2rem;
+}

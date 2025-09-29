@@ -1,0 +1,177 @@
+/* ===== GLOBAL RESET & FONTS ===== */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+  background-color: #fefefe; /* Light background color */
+  color: #333; /* Dark text for readability */
+  overflow: hidden;
+}
+
+/* ===== REGISTER CONTAINER WITH LIGHTER GRADIENT BG ===== */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #e2e5e8, #bfccc9); /* Light gradient background */
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite; /* Smooth gradient animation */
+}
+
+/* ===== LARGE "REGISTER" BACKGROUND TEXT ===== */
+.register-container::before {
+  content: "CAMPUS";
+  position: absolute;
+  font-size: 11rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.05); /* Subtle white shadow */
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 14px;
+  opacity: 0.2; /* Subtle background effect */
+}
+
+/* ===== ABSTRACT COLORFUL BLOBS ===== */
+.register-container::after {
+  content: "";
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #50e3c2, #4a90e2);
+  bottom: -180px;
+  left: -180px;
+  filter: blur(140px);
+  opacity: 0.4;
+  z-index: 0;
+}
+
+/* ===== REGISTER CARD - LIGHT GLASS EFFECT ===== */
+.register-card {
+  background: rgba(255, 255, 255, 0.2); /* Light glass effect */
+  padding: 45px 35px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(74, 144, 226, 0.3); /* Subtle shadow for floating effect */
+  width: 360px;
+  z-index: 3;
+  text-align: center;
+  backdrop-filter: blur(12px); /* Blur effect behind the card */
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* ===== REGISTER TITLE ===== */
+.register-title {
+  font-size: 2rem;
+  margin-bottom: 25px;
+  background: linear-gradient(90deg, #4a90e2, #50e3c2);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 800;
+  animation: gradientFlow 6s ease infinite;
+}
+
+/* ===== FORM ELEMENTS ===== */
+.input-group {
+  text-align: left;
+  margin-bottom: 18px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #4a90e2; /* Lighter label color */
+  font-weight: 500;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd; /* Lighter border color */
+  background-color: #fefefe; /* Light input background */
+  color: #333; /* Dark text color */
+  outline: none;
+  font-size: 14px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #4a90e2; /* Focus color */
+  background-color: #e8f5fe; /* Light background color on focus */
+}
+
+/* ===== REGISTER BUTTON ===== */
+.register-btn {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #4a90e2, #50e3c2); /* Light gradient for button */
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.register-btn:hover {
+  background: linear-gradient(135deg, #357abd, #4a90e2); /* Hover effect */
+  box-shadow: 0 0 12px rgba(74, 144, 226, 0.3);
+  transform: scale(1.05); /* Slight scaling effect */
+}
+
+/* ===== LOGIN LINK ===== */
+.login-link {
+  margin-top: 18px;
+  font-size: 14px;
+  color: #aaa; /* Lighter text color for the login link */
+}
+
+.login-link a {
+  color: #4a90e2; /* Button color for the link */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* ===== GRADIENT FLOW ANIMATION ===== */
+@keyframes gradientFlow {
+  0% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+  100% { background-position: 0% center; }
+}
+
+/* ===== FADE IN CARD ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 480px) {
+  .register-card {
+    width: 90%;
+    padding: 30px 25px;
+  }
+
+  .register-container::before {
+    font-size: 6rem;
+    top: 30%;
+  }
+}
