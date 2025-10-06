@@ -15,6 +15,7 @@ import Labcoat from './components/pages/Labcoat';
 import Calculator from './components/pages/Calculator';
 import Drafter from './components/pages/Drafter';
 
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>

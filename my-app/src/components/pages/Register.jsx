@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import Axios to call backend
 import "./register.css";
 
 const Register = () => {
@@ -7,22 +8,37 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [college, setCollege] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(""); // Show backend response
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    const userData = { email, password, college };
-    localStorage.setItem("userData", JSON.stringify(userData));
-    alert("Registration successful!");
 
-
-    // TODO: Replace with real API call
-    if (name && email && password && college) {
-      console.log("Registered:", { name, email, password, college });
-      alert("Registration successful!");
-      navigate("/login"); // ✅ Redirect to login
-    } else {
+    if (!name || !email || !college || !password) {
       alert("Please fill in all fields");
+      return;
+    }
+
+    try {
+      // Send data to backend with updated property names
+      const res = await axios.post("http://localhost:8081/api/register", {
+        full_name: name,        // maps to DB column full_name
+        mail_id: email,         // maps to DB column mail_id
+        pass: password,         // maps to DB column pass
+        college_name: college,  // maps to DB column college_name
+      });
+
+      // Display success message
+      setMessage(res.data.message);
+
+      // Redirect to login after short delay
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+
+    } catch (err) {
+      // Show backend error or generic message
+      setMessage(err.response?.data?.message || "Registration failed");
     }
   };
 
@@ -54,14 +70,18 @@ const Register = () => {
           </div>
 
           <div className="input-group">
-            <label>College</label>
-            <input
-              type="text"
-              placeholder="Enter your college"
+            <label>Select College</label>
+            <select
               value={college}
               onChange={(e) => setCollege(e.target.value)}
               required
-            />
+            >
+              <option value="">-- Select College --</option>
+              <option value="VCET">VCET</option>
+              <option value="TSEC">TSEC</option>
+              <option value="VJTI">VJTI</option>
+              <option value="SPIT">SPIT</option>
+            </select>
           </div>
 
           <div className="input-group">
@@ -79,6 +99,19 @@ const Register = () => {
             Sign Up
           </button>
         </form>
+
+        {/* Show backend success/error message */}
+        {message && (
+          <p
+            style={{
+              marginTop: "15px",
+              textAlign: "center",
+              color: message.includes("successful") ? "green" : "red",
+            }}
+          >
+            {message}
+          </p>
+        )}
 
         <p className="login-link">
           Already have an account?{" "}

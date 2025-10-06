@@ -1,49 +1,54 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./login.css";
 
 const Login = () => {
   const [college, setCollege] = useState(""); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(""); // Show success/error
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const storedData = JSON.parse(localStorage.getItem("userData"));
-
-    if (!storedData) {
-      alert("No registered user found. Please register first.");
-      return;
-    }
 
     if (!college) {
       alert("Please select your college");
       return;
     }
 
-    // Simulated login validation
-    if (
-      email.endsWith("@vcet.edu.in") &&
-      email === storedData.email &&
-      password === storedData.password
-    ) {
-      console.log("Login successful", { college: storedData.college, email });
-      navigate("/home");
-    } else {
-      alert("Invalid email or password");
+    try {
+      // Call backend API with proper DB field names
+      const res = await axios.post("http://localhost:8081/api/login", {
+        mail_id: email,
+        pass: password,
+        college_name: college,
+      });
+
+      // Successful login
+      setMessage(res.data.message);
+
+      // Store user info in localStorage
+      localStorage.setItem("userData", JSON.stringify(res.data.user));
+
+      // Dispatch login event so Navbar updates immediately
+      window.dispatchEvent(new Event('login'));
+
+      // Redirect after short delay
+      setTimeout(() => navigate("/home"), 1000);
+
+    } catch (err) {
+      // Show backend error or generic message
+      setMessage(err.response?.data?.message || "Login failed");
     }
   };
 
   return (
     <div className="login-container">
-      
-      {/* Login card stays on top of background */}
       <div className="login-card">
         <h2 className="login-title">CampusKart Login</h2>
         <form onSubmit={handleLogin}>
-          
-          {/* College Dropdown */}
           <div className="input-group">
             <label>Select College</label>
             <select
@@ -59,7 +64,6 @@ const Login = () => {
             </select>
           </div>
 
-          {/* Email */}
           <div className="input-group">
             <label>College Email</label>
             <input
@@ -71,7 +75,6 @@ const Login = () => {
             />
           </div>
 
-          {/* Password */}
           <div className="input-group">
             <label>Password</label>
             <input
@@ -83,13 +86,23 @@ const Login = () => {
             />
           </div>
 
-          {/* Login Button */}
           <button type="submit" className="login-btn">
             Login
           </button>
         </form>
 
-        {/* Sign up link */}
+        {message && (
+          <p
+            style={{
+              marginTop: "10px",
+              color: message.includes("successful") ? "green" : "red",
+              textAlign: "center",
+            }}
+          >
+            {message}
+          </p>
+        )}
+
         <p className="register-link">
           Don’t have an account?{" "}
           <span
