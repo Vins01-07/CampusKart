@@ -1,57 +1,40 @@
-import React, { useState } from 'react';
-import { Upload, X, Camera, MapPin, DollarSign, Tag, FileText } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import './sell.css';
+import React, { useState } from "react";
+import { Upload, X, MapPin, DollarSign, Tag } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./sell.css";
 
 const Sell = () => {
   const [formData, setFormData] = useState({
-    title: '',
-    category: '',
-    description: '',
-    price: '',
-    condition: 'used',
-    location: '',
-    contactInfo: ''
+    title: "",
+    category: "",
+    description: "",
+    price: "",
+    condition: "used",
+    location: "",
+    contactInfo: "",
   });
   const [images, setImages] = useState([]);
   const [dragActive, setDragActive] = useState(false);
-  
   const navigate = useNavigate();
 
-  const categories = [
-    'Labcoats',
-    'Books',
-    'Calculators',
-    'EG Kit',
-    'Appliances',
-    'Clothing',
-    'School Supplies',
-    'Other'
-  ];
+  const categories = ["Books", "Calculators", "Lab Coats", "EG Kit"];
 
-  // Handle input change and form updates
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
-    // Redirect to /books when category is "Books"
-    if (name === 'category' && value === 'Books') {
-      navigate('/books');
-    }
   };
 
-  // Handle drag and drop for images
   const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
+    if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
-    } else if (e.type === 'dragleave') {
+    } else if (e.type === "dragleave") {
       setDragActive(false);
     }
   };
 
-  // Handle file drop
   const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -62,14 +45,13 @@ const Sell = () => {
     }
   };
 
-  // Handle files (images) selected by the user
   const handleFiles = (files) => {
-    Array.from(files).forEach(file => {
-      if (file.type.startsWith('image/')) {
+    Array.from(files).forEach((file) => {
+      if (file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onload = (e) => {
           if (e.target?.result) {
-            setImages(prev => [...prev, e.target.result]);
+            setImages((prev) => [...prev, { file, preview: e.target.result }]);
           }
         };
         reader.readAsDataURL(file);
@@ -77,31 +59,51 @@ const Sell = () => {
     });
   };
 
-  // Remove an image from the preview
   const removeImage = (index) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Handle form submission (Publishing the product)
-  const handleSubmit = (e) => {
+  // 🚀 Submit product to backend
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log('Product listed:', { ...formData, images });
-    // Call API to save the product in the selected category (optional)
-    // Example API call to save product
-    // saveProductToCategory({ ...formData, images });
+    if (images.length === 0) {
+      alert("Please upload at least one product image!");
+      return;
+    }
 
-    // Redirect to category page after publish
-    if (formData.category) {
-      navigate(`/${formData.category.toLowerCase()}`);
+    const data = new FormData();
+    data.append("title", formData.title);
+    data.append("category", formData.category);
+    data.append("description", formData.description);
+    data.append("price", formData.price);
+    data.append("condition", formData.condition);
+    data.append("location", formData.location);
+    data.append("contactInfo", formData.contactInfo);
+
+    // Only take first image for now
+    data.append("image", images[0].file);
+
+    try {
+      const res = await axios.post("http://localhost:8081/api/sell/add", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (res.status === 200) {
+        alert("✅ Product listed successfully!");
+        navigate(`/${formData.category.toLowerCase()}`);
+      } else {
+        alert("❌ Failed to list product. Try again.");
+      }
+    } catch (err) {
+      console.error("Error uploading product:", err);
+      alert("⚠️ Server error while uploading product.");
     }
   };
 
-  // Handle Save Draft
   const handleSaveDraft = () => {
-    const draftData = { ...formData, images };
-    localStorage.setItem('productDraft', JSON.stringify(draftData));
-    alert('Draft saved successfully!');
+    localStorage.setItem("productDraft", JSON.stringify({ ...formData, images }));
+    alert("💾 Draft saved successfully!");
   };
 
   return (
@@ -115,7 +117,7 @@ const Sell = () => {
         <div className="image-upload-section">
           <h2>Product Images</h2>
           <div
-            className={`image-drop-area ${dragActive ? 'drag-active' : ''}`}
+            className={`image-drop-area ${dragActive ? "drag-active" : ""}`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
@@ -141,11 +143,7 @@ const Sell = () => {
             <div className="image-preview">
               {images.map((image, index) => (
                 <div key={index} className="image-preview-item">
-                  <img
-                    src={image}
-                    alt={`Preview ${index + 1}`}
-                    className="image-preview-img"
-                  />
+                  <img src={image.preview} alt={`Preview ${index + 1}`} />
                   <button
                     type="button"
                     onClick={() => removeImage(index)}
@@ -161,7 +159,6 @@ const Sell = () => {
 
         <div className="product-details-section">
           <h2>Product Details</h2>
-
           <div className="form-grid">
             <div className="form-group">
               <label>Product Title *</label>
@@ -170,8 +167,6 @@ const Sell = () => {
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className="input-field"
-                placeholder="e.g., MacBook Pro 13inch 2021"
                 required
               />
             </div>
@@ -184,19 +179,20 @@ const Sell = () => {
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
-                  className="input-field"
                   required
                 >
                   <option value="">Select a category</option>
-                  {categories.map((category, index) => (
-                    <option key={index} value={category}>{category}</option>
+                  {categories.map((cat, index) => (
+                    <option key={index} value={cat}>
+                      {cat}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
 
             <div className="form-group">
-              <label>Price *</label>
+              <label>Price (₹) *</label>
               <div className="input-container">
                 <DollarSign className="input-icon" />
                 <input
@@ -204,8 +200,7 @@ const Sell = () => {
                   name="price"
                   value={formData.price}
                   onChange={handleInputChange}
-                  className="input-field"
-                  placeholder="0.00"
+                  placeholder="Enter price"
                   min="0"
                   step="0.01"
                   required
@@ -219,7 +214,6 @@ const Sell = () => {
                 name="condition"
                 value={formData.condition}
                 onChange={handleInputChange}
-                className="input-field"
                 required
               >
                 <option value="new">New</option>
@@ -238,7 +232,6 @@ const Sell = () => {
                   name="location"
                   value={formData.location}
                   onChange={handleInputChange}
-                  className="input-field"
                   placeholder="e.g., Main Campus, Library"
                   required
                 />
@@ -252,42 +245,30 @@ const Sell = () => {
                 value={formData.description}
                 onChange={handleInputChange}
                 rows={4}
-                className="input-field"
-                placeholder="Describe your item in detail. Include any defects, accessories, or special features..."
+                placeholder="Describe your item in detail..."
                 required
               />
             </div>
 
             <div className="form-group full-width">
-              <label>Contact Information</label>
+              <label>Contact Info (optional)</label>
               <input
                 type="text"
                 name="contactInfo"
                 value={formData.contactInfo}
                 onChange={handleInputChange}
-                className="input-field"
-                placeholder="Phone number or additional contact details (optional)"
+                placeholder="Phone number or email"
               />
             </div>
           </div>
         </div>
 
-        <div className="safety-tips">
-          <h3>🛡️ Safety Tips</h3>
-          <ul>
-            <li>• Always meet in public, well-lit campus locations</li>
-            <li>• Verify the buyer's student ID before finalizing the sale</li>
-            <li>• Use cash or secure payment methods like Venmo/CashApp</li>
-            <li>• Trust your instincts - if something feels off, don't proceed</li>
-          </ul>
-        </div>
-
         <div className="submit-buttons">
           <button type="button" className="save-draft-button" onClick={handleSaveDraft}>
-            Save as Draft
+            💾 Save Draft
           </button>
           <button type="submit" className="publish-button">
-            Publish Product
+            🚀 Publish Product
           </button>
         </div>
       </form>

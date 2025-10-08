@@ -6,7 +6,6 @@ import "./home.css";
 const Home = () => {
   const navigate = useNavigate();
 
-  // ✅ Fetch user data from localStorage
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("userData");
     return storedUser ? JSON.parse(storedUser) : null;
@@ -14,15 +13,25 @@ const Home = () => {
 
   const [cart, setCart] = useState([]);
   const [cartMessage, setCartMessage] = useState("");
+  const [products, setProducts] = useState([]);
 
-  // ✅ Load saved cart items from DB when user logs in
   useEffect(() => {
-    if (user && user.mail_id) {
-      fetchCartFromDB(user.mail_id);
-    }
+    if (user && user.mail_id) fetchCartFromDB(user.mail_id);
   }, [user]);
 
-  // ✅ Fetch cart from backend by email
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get("http://localhost:8081/api/products");
+      setProducts(res.data);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    }
+  };
+
   const fetchCartFromDB = async (email) => {
     try {
       const res = await axios.get(`http://localhost:8081/api/cart/${email}`);
@@ -32,7 +41,6 @@ const Home = () => {
     }
   };
 
-  // ✅ Add to cart (Save to DB)
   const addToCart = async (item) => {
     if (!user) {
       alert("Please log in to add items to your cart!");
@@ -41,43 +49,36 @@ const Home = () => {
     }
 
     try {
-      // Use a small integer as item_id (match your product array ID)
-      const itemId = item.id || Math.floor(Math.random() * 100000);
-
       const res = await axios.post("http://localhost:8081/api/cart/add", {
         user_email: user.mail_id,
-        item_id: itemId, // use safe integer
-        item_name: item.name,
+        item_id: item.id,
+        item_name: item.title || item.name,
         item_price: item.price,
-        item_image: item.img,
+        item_image: item.image,
         quantity: 1,
       });
 
-      // Update local cart instantly
-      const existingItem = cart.find((c) => c.item_id === itemId);
-      let updatedCart;
-      if (existingItem) {
-        updatedCart = cart.map((c) =>
-          c.item_id === itemId ? { ...c, quantity: c.quantity + 1 } : c
-        );
-      } else {
-        updatedCart = [
-          ...cart,
-          {
-            id: res.data.cartId,
-            item_id: itemId,
-            item_name: item.name,
-            item_price: item.price,
-            item_image: item.img,
-            quantity: 1,
-          },
-        ];
-      }
+      const existingItem = cart.find((c) => c.item_id === item.id);
+      const updatedCart = existingItem
+        ? cart.map((c) =>
+            c.item_id === item.id ? { ...c, quantity: c.quantity + 1 } : c
+          )
+        : [
+            ...cart,
+            {
+              id: res.data.cartId,
+              item_id: item.id,
+              item_name: item.title || item.name,
+              item_price: item.price,
+              item_image: item.image,
+              quantity: 1,
+            },
+          ];
 
       setCart(updatedCart);
       localStorage.setItem("cart", JSON.stringify(updatedCart));
 
-      setCartMessage(`${item.name} has been added to your cart!`);
+      setCartMessage(`${item.title || item.name} added to your cart!`);
       setTimeout(() => setCartMessage(""), 3000);
     } catch (err) {
       console.error("Error adding to cart:", err);
@@ -85,21 +86,8 @@ const Home = () => {
     }
   };
 
-  // ✅ Remove item from cart (backend)
-  const removeItem = async (id) => {
-    try {
-      await axios.delete(`http://localhost:8081/api/cart/delete/${id}`);
-      const updatedCart = cart.filter((item) => item.id !== id);
-      setCart(updatedCart);
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-    } catch (err) {
-      console.error("Error removing item:", err);
-    }
-  };
-
   return (
     <div className="home">
-      {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
           <h1>Welcome, {user?.full_name || "Student"} 🎓</h1>
@@ -110,7 +98,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Categories */}
       <section className="section categories">
         <h2 className="section-title">Shop by Category</h2>
         <div className="grid category-grid">
@@ -131,9 +118,30 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Best Sellers */}
       <section className="section">
-        <h2 className="section-title">Best Sellers</h2>
+        <h2 className="section-title">Recently Listed by Students</h2>
+        <div className="grid product-grid">
+          {products.length === 0 ? (
+            <p>No products listed yet. Be the first to sell something!</p>
+          ) : (
+            products.map((item) => (
+              <div className="card product-card" key={item.id}>
+                <img src={item.image} alt={item.title || item.name} />
+                <h3>{item.title || item.name}</h3>
+                <p className="price">₹{Number(item.price).toFixed(2)}</p>
+                <p className="condition">Condition: {item.item_condition || "N/A"}</p>
+                <p className="location">📍 {item.location || "Unknown"}</p>
+                <button className="btn-secondary" onClick={() => addToCart(item)}>
+                  Add to Cart
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
+
+      <section className="section">
+        <h2 className="section-title">Campus Best Sellers</h2>
         <div className="grid product-grid">
           {[
             { id: 101, name: "Scientific Calculator", price: 25, img: "https://bestcalculators.net/wp-content/uploads/2018/04/Helect-H1002-1.jpg" },
@@ -156,9 +164,7 @@ const Home = () => {
 
       <footer className="footer">
         <p>📚 Campus Store © 2025 | All Rights Reserved</p>
-        <p>
-          Need help? <Link to="/Contact">Contact Us</Link>
-        </p>
+        <p>Need help? <Link to="/Contact">Contact Us</Link></p>
       </footer>
     </div>
   );
